@@ -52,42 +52,45 @@ void dispose() {
       appBar: AppBar(
           title: const Text("Register"),
       ),
-      body: Column(
-        children: [
-          TextField(
-            controller: _email,
-            enableSuggestions: false,
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: "Enter your email",
-            ),
-          ),
-          TextField(
-            controller: _password,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: const InputDecoration(
-              hintText: "Enter your password",
-            ),
-          ),
+      body: FutureBuilder(
+        future: Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        ),
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              TextField(
+                controller: _email,
+                enableSuggestions: false,
+                autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: "Enter your email",
+                ),
+              ),
+              TextField(
+                controller: _password,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  hintText: "Enter your password",
+                ),
+              ),
 
-          TextButton(onPressed: () async {
-            await Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform,
-            );
-
-            final email = _email!.text;
-            final password = _password!.text;
-            final usercredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                email: email,
-                password: password,
-            );
-          },
-            child: const Text("Register"),
-          ),
-        ],
+              TextButton(onPressed: () async {
+                final email = _email!.text;
+                final password = _password!.text;
+                final usercredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
+              },
+                child: const Text("Register"),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

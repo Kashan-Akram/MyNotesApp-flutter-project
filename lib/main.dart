@@ -10,22 +10,35 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.pink,
     ),
-    home: const HomePage(),
+    home: const RegisterView(),
   ),
   );
 }
 
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class RegisterView extends StatefulWidget {
+  const RegisterView({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _HomePageState extends State<HomePage> {
-  //late final TextEditingController _email;
-  //late final TextEditingController _password;
+class _RegisterViewState extends State<RegisterView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+
+
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key}) : super(key: key);
+
+  @override  
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   TextEditingController? _email;
   TextEditingController? _password;
  @override

@@ -12,7 +12,7 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.pink,
     ),
-    home: const LoginView(),
+    home: const RegisterView(),
   ),
   );
 }
@@ -73,14 +73,17 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                   ),
 
-                  TextButton(onPressed: () async {
+                  TextButton(
+                    onPressed: () async {
                     final email = _email!.text;
                     final password = _password!.text;
-                    final usercredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                  },
+                    try{
+                      final usercredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      print(usercredential);
+                    } on FirebaseAuthException catch(e){},
                     child: const Text("Register"),
                   ),
                 ],

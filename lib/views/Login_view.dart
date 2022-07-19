@@ -20,12 +20,7 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
   }
 
-  @override/*
-void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  } */
+  @override
   void dispose() {
     _email!.dispose();
     _password!.dispose();

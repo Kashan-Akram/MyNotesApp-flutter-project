@@ -12,7 +12,7 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.pink,
     ),
-    home: const RegisterView(),
+    home: const LoginView(),
   ),
   );
 }

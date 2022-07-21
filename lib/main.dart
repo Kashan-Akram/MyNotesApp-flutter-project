@@ -5,6 +5,7 @@ import 'package:hehewhoknows/views/Login_view.dart';
 import 'package:hehewhoknows/views/Register_view.dart';
 import 'package:hehewhoknows/views/Verify_Email.dart';
 import 'firebase_options.dart';
+import 'dart:developer' as devtools show log;
 
 void main(){
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +56,11 @@ class HomePage extends StatelessWidget {
   }
 }
 
+enum MenuAction { logout }
+
+
+
+
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
 
@@ -67,7 +73,22 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Main UI")
+        title: const Text("Main UI"),
+            actions: [
+      PopupMenuButton<MenuAction>(
+      onSelected: (value){
+        devtools.log(value.toString());
+      },
+      itemBuilder: (context){
+                return const[
+                  PopupMenuItem<MenuAction>(
+                      value: MenuAction.logout,
+                      child: Text("Logout")
+                  ),
+                ];
+            },
+          ),
+        ], // actions
       ),
       body: const Text("Hello World!"),
     );

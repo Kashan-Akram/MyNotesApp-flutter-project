@@ -19,6 +19,7 @@ void main(){
       routes: {
         "/login/" : (context) => const LoginView(),
         "/register/" : (context) => const RegisterView(),
+        "/notes/": (context) => const NotesView(),
       },
   ),
   );
@@ -85,7 +86,7 @@ class _NotesViewState extends State<NotesView> {
               await FirebaseAuth.instance.signOut();
               Navigator.of(context).pushNamedAndRemoveUntil(
                   "/login/",
-                   (_) => false,
+                   (route) => false,
               );
             }
         }

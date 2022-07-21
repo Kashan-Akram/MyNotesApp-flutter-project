@@ -27,7 +27,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: const Text("Sign in"),
       ),
       body: Column(
         children: [
@@ -69,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
                 }
               }
             },
-            child: const Text("Login"),
+            child: const Text("Sign in"),
           ),
           TextButton(
             onPressed: () {

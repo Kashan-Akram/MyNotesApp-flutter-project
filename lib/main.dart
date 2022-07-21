@@ -76,14 +76,25 @@ class _NotesViewState extends State<NotesView> {
         title: const Text("Main UI"),
             actions: [
       PopupMenuButton<MenuAction>(
-      onSelected: (value){
-        devtools.log(value.toString());
+      onSelected: (value) async {
+        switch(value){
+          case MenuAction.logout:
+            final shouldLogout = await showLogOutDialog(context);
+           // devtools.log(shouldLogout.toString());
+            if(shouldLogout){
+              await FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  "/login/",
+                   (_) => false,
+              );
+            }
+        }
       },
       itemBuilder: (context){
                 return const[
                   PopupMenuItem<MenuAction>(
                       value: MenuAction.logout,
-                      child: Text("Logout")
+                      child: Text("Sign Out")
                   ),
                 ];
             },

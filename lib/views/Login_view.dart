@@ -64,7 +64,9 @@ class _LoginViewState extends State<LoginView> {
                   email: email,
                   password: password,
                 );
-                //devtools.log(usercredential.toString());
+                
+
+
                 Navigator.of(context).pushNamedAndRemoveUntil(
                         notesRoute,
                         (route) => false,

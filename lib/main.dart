@@ -60,9 +60,6 @@ class HomePage extends StatelessWidget {
 
 enum MenuAction { logout }
 
-
-
-
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
 

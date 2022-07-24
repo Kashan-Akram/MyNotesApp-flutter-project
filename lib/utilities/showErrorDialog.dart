@@ -18,5 +18,5 @@ Future<void> showErrorDialog(
       ],
     );
   },
-  );
+ );
 }

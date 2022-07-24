@@ -1,9 +1,12 @@
 import 'package:hehewhoknows/services/auth/auth_providers.dart';
 import 'package:hehewhoknows/services/auth/auth_user.dart';
+import 'package:hehewhoknows/services/auth/firebase_auth_provider.dart';
 
 class AuthService implements AuthProvider{
   final AuthProvider provider;
   const AuthService(this.provider);
+
+  factory AuthService.firebase() => AuthService(FirebaseAuthProvider(),);
 
   @override
   Future<AuthUser> createUser({

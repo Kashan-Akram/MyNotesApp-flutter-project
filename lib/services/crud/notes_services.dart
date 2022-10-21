@@ -5,42 +5,43 @@ import "package:path/path.dart" show join;
 
 class DatabaseAlreadyOpenException implements Exception{}
 class UnableToGetDocumentsDirectory implements Exception{}
+class DatabaseNotOpen implements Exception{};
 
 class NotesService{
  Database? _db;
+
+  Future<void> close() async{
+    final db = _db;
+    if(db == null){
+      throw DatabaseNotOpen();
+    }else{
+      await db.close();
+      _db = null;
+    }
+  }
+
   Future<void> open() async {
     if(_db != null){
       throw DatabaseAlreadyOpenException();
     }
+
   try{
       final docsPath = await getApplicationDocumentsDirectory();
       final dbPath = join(docsPath.path, dbName);
       final db = await openDatabase(dbPath);
       _db = db;
+
+      // creating the user table
+      await db.execute(createUserTable);
+
+      // creating the notes table
+      await db.execute(createNotesTable);
+
   } on MissingPlatformDirectoryException{
     throw UnableToGetDocumentsDirectory();
   }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @immutable
 class DatabaseUser{
@@ -63,8 +64,6 @@ class DatabaseUser{
 
   @override
   int get hashCode => id.hashCode;
-
-
 }
 
 class DatabaseNote{
@@ -87,8 +86,6 @@ class DatabaseNote{
         isSyncedWithCloud =
           (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
-
-
   @override
   String toString()=>
       "Note, ID = $id, userID = $userID, isSyncedWithCloud = $isSyncedWithCloud";
@@ -100,7 +97,7 @@ class DatabaseNote{
   int get hashCode => id.hashCode;
 }
 
-
+// we can consolidate all of our constants here to make code look cleaner
 const dbName = "notes.db";
 const noteTable = "note";
 const userTable = "user";
@@ -109,8 +106,20 @@ const emailColumn = "email";
 const userIDColumn = "user_id";
 const textColumn = "text";
 const isSyncedWithCloudColumn = "is_synced_with_cloud";
-
-
+const createUserTable = '''
+      CREATE TABLE IF NOT EXISTS "user" (
+      "id"	INTEGER NOT NULL,
+      "email"	TEXT NOT NULL UNIQUE,
+      PRIMARY KEY("id" AUTOINCREMENT)
+      ); ''';
+const createNotesTable = '''
+      CREATE TABLE IF NOT EXISTS "note" (
+      "id"	INTEGER NOT NULL,
+      "user_id"	INTEGER NOT NULL,
+      "text"	TEXT,
+      FOREIGN KEY("user_id") REFERENCES "user"("id"),
+      PRIMARY KEY("id" AUTOINCREMENT)
+      );''';
 
 
 

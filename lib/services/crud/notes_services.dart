@@ -10,9 +10,50 @@ class CouldNotDeleteUser implements Exception{}
 class UserAlreadyExists implements Exception{}
 class CouldNotFindUser implements Exception{}
 class CouldNotDeleteNote implements Exception{}
+class CouldNoteFindNote implements Exception{}
+class CouldNoteUpdateNote implements Exception{}
 
 class NotesServices{
   Database? _db;
+
+  Future<DatabaseNote> updateNote(
+    {required DatabaseNote note, required String text }) async {
+      final db = _getDatabaseOrThrow();
+      // checking if the note we want to update already exists or not
+      // if it does not exits our getNote function will throw error
+      await getNote(id: note.id);
+      final updateCount = await db.update(noteTable,
+        {
+          textColumn: text,
+          isSyncedWithCloudColumn: 0,
+        }
+      );
+      if(updateCount == 0){
+        throw CouldNoteUpdateNote();
+      }else{
+        return await getNote(id: note.id);
+      }
+  }
+
+  Future<Iterable<DatabaseNote>> getAllNotes() async {
+    final db = _getDatabaseOrThrow();
+    final notes = await db.query(noteTable);
+    return notes.map((noteRow) => DatabaseNote.fromRow(noteRow));
+  }
+
+  Future<DatabaseNote> getNote({required int id}) async {
+    final db = _getDatabaseOrThrow();
+    final notes = await db.query(noteTable,
+      limit : 1,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+    if(notes.isEmpty){
+      throw CouldNoteFindNote();
+    }else{
+      return DatabaseNote.fromRow(notes.first);
+    }
+  }
 
   Future<DatabaseNote> createNote({required DatabaseUser owner}) async {
     final db = _getDatabaseOrThrow();
@@ -48,6 +89,11 @@ class NotesServices{
     if(deletedCount == 0){
       throw CouldNotDeleteNote();
     }
+  }
+
+  Future<int> deleteAllNotes() async {
+    final db = _getDatabaseOrThrow();
+    return await db.delete(noteTable);
   }
 
   Future<DatabaseUser> getUser({required String email}) async {
@@ -220,7 +266,3 @@ const createNotesTable = '''
       FOREIGN KEY("user_id") REFERENCES "user"("id"),
       PRIMARY KEY("id" AUTOINCREMENT)
       );''';
-
-
-
-

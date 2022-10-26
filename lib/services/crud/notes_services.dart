@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import "package:sqflite/sqflite.dart";
 import "package:path_provider/path_provider.dart";
@@ -6,6 +7,34 @@ import 'crud_exceptions.dart';
 
 class NotesServices{
   Database? _db;
+
+  List<DatabaseNote> _notes = [];
+
+  final _notesStreamController =
+      StreamController<List<DatabaseNote>>.broadcast();
+
+  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+    try{
+      final user = await getUser(email: email);
+      return user;
+    } on CouldNotFindUser{
+      final createdUser = await createUser(email: email);
+      return createdUser;
+    } catch(e){
+      rethrow;
+    }
+  }
+
+
+
+  //using the "_" as prefix in a function name tells dart that
+  //we are having this function as private to our file
+  //functions without "_" prefix can be used publicly out someplace
+  Future<void> _cacheNotes() async {
+    final allNotes = await getAllNotes();
+    _notes = allNotes.toList();
+    _notesStreamController.add(_notes);
+  }
 
   Future<DatabaseNote> updateNote(
     {required DatabaseNote note, required String text }) async {
@@ -22,7 +51,11 @@ class NotesServices{
       if(updateCount == 0){
         throw CouldNoteUpdateNote();
       }else{
-        return await getNote(id: note.id);
+        final updatedNote = await getNote(id: note.id);
+        _notes.removeWhere((note) => note.id == .id);
+        _notes.add(updatedNote);
+        _notesStreamController.add(_notes);
+        return updatedNote;
       }
   }
 
@@ -42,7 +75,17 @@ class NotesServices{
     if(notes.isEmpty){
       throw CouldNoteFindNote();
     }else{
-      return DatabaseNote.fromRow(notes.first);
+      final note = DatabaseNote.fromRow(notes.first);
+
+      //in this function there is a possibility that the note we are trying to get
+      //has been updated but since the id remains the same it could be an issue that
+      //a copy of that note already exists in the cache and its not updated with
+      //the latest changes we had applied to the note
+      _notes.removeWhere((note) => note.id == id);
+      _notes.add(note);
+      _notesStreamController.add(_notes);
+
+      return note;
     }
   }
 
@@ -68,6 +111,11 @@ class NotesServices{
       text: text,
       isSyncedWithCloud: true,
     );
+
+    // caching the newly created note
+    _notes.add(note);
+    _notesStreamController.add(_notes);
+
     return note;
   }
 
@@ -79,12 +127,22 @@ class NotesServices{
     );
     if(deletedCount == 0){
       throw CouldNotDeleteNote();
+    }else{
+      //we need to also remove it from the cached notes list
+      _notes.removeWhere((note) => note.id == id);
+      _notesStreamController.add(_notes);
     }
   }
 
   Future<int> deleteAllNotes() async {
     final db = _getDatabaseOrThrow();
-    return await db.delete(noteTable);
+    final numberOfDeletions = await db.delete(noteTable);
+
+    // also need to remove all notes from cache
+    _notes = [];
+    _notesStreamController.add(_notes);
+
+    return numberOfDeletions;
   }
 
   Future<DatabaseUser> getUser({required String email}) async {
@@ -172,7 +230,10 @@ class NotesServices{
 
       // creating the notes table
       await db.execute(createNotesTable);
-
+      //after we've made sure that all the tables are open and database
+      //is reactive we are going to create a stream and stream controller
+      //with the help of _cacheNotes function
+      await _cacheNotes();
   } on MissingPlatformDirectoryException{
     throw UnableToGetDocumentsDirectory();
   }

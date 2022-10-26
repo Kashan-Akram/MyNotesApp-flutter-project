@@ -7,11 +7,9 @@ import 'crud_exceptions.dart';
 
 class NotesServices{
   Database? _db;
-
   List<DatabaseNote> _notes = [];
 
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
 
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try{
@@ -24,8 +22,6 @@ class NotesServices{
       rethrow;
     }
   }
-
-
 
   //using the "_" as prefix in a function name tells dart that
   //we are having this function as private to our file

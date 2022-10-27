@@ -11,10 +11,16 @@ class NotesServices{
 
   // making our class NoteServices a SingleTon
   static final NotesServices _shared = NotesServices._sharedInstance();
-  NotesServices._sharedInstance();
+  NotesServices._sharedInstance(){
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesServices() => _shared;
 
-  final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
@@ -335,6 +341,7 @@ const createNotesTable = '''
       "id"	INTEGER NOT NULL,
       "user_id"	INTEGER NOT NULL,
       "text"	TEXT,
+      "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
       FOREIGN KEY("user_id") REFERENCES "user"("id"),
       PRIMARY KEY("id" AUTOINCREMENT)
       );''';

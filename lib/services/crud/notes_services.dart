@@ -9,7 +9,14 @@ class NotesServices{
   Database? _db;
   List<DatabaseNote> _notes = [];
 
+  // making our class NoteServices a SingleTon
+  static final NotesServices _shared = NotesServices._sharedInstance();
+  NotesServices._sharedInstance();
+  factory NotesServices() => _shared;
+
   final _notesStreamController = StreamController<List<DatabaseNote>>.broadcast();
+
+  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
   Future<DatabaseUser> getOrCreateUser({required String email}) async {
     try{

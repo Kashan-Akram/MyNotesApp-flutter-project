@@ -6,7 +6,7 @@ import 'package:hehewhoknows/services/auth/auth_service.dart';
 import 'package:hehewhoknows/views/Login_view.dart';
 import 'package:hehewhoknows/views/Register_view.dart';
 import 'package:hehewhoknows/views/Verify_Email.dart';
-import 'package:hehewhoknows/views/notes_view.dart';
+import 'package:hehewhoknows/views/notes/notes_view.dart';
 
 
 void main(){

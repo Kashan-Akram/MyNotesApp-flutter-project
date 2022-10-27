@@ -81,7 +81,15 @@ class _NotesViewState extends State<NotesView> {
                                 return ListView.builder(
                                   itemCount: allNotes.length,
                                   itemBuilder: (context, index){
-                                    return const Text("HeHe");
+                                    final note = allNotes[index];
+                                    return ListTile(
+                                      title: Text(
+                                          note.text,
+                                          maxLines: 1,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
                                   },
                                 );
                               }else{

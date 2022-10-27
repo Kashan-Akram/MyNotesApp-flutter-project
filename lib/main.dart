@@ -7,7 +7,7 @@ import 'package:hehewhoknows/views/Login_view.dart';
 import 'package:hehewhoknows/views/Register_view.dart';
 import 'package:hehewhoknows/views/Verify_Email.dart';
 import 'package:hehewhoknows/views/notes/notes_view.dart';
-
+import 'package:hehewhoknows/views/notes/new_note_view.dart';
 
 void main(){
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +23,7 @@ void main(){
         registerRoute : (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyEmailRoute: (context) => const VerifyEmail(),
+        newNoteRoute: (context) => const NewNoteView(),
       },
   ),
   );

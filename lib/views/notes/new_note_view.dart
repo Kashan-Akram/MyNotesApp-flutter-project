@@ -87,6 +87,9 @@ class _NewNoteViewState extends State<NewNoteView> {
                 controller: _textController,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
+                decoration: const InputDecoration(
+                  hintText: "Type your note here...",
+                ),
               );
             default:
               return const CircularProgressIndicator();

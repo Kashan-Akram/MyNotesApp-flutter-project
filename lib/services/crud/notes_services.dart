@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:hehewhoknows/extensions/filter.dart';
 import "package:sqflite/sqflite.dart";
 import "package:path_provider/path_provider.dart";
 import "package:path/path.dart" show join;
@@ -8,6 +9,8 @@ import 'crud_exceptions.dart';
 class NotesServices{
   Database? _db;
   List<DatabaseNote> _notes = [];
+
+  DatabaseUser? _user;
 
   // making our class NoteServices a SingleTon
   static final NotesServices _shared = NotesServices._sharedInstance();
@@ -22,18 +25,33 @@ class NotesServices{
 
   late final StreamController<List<DatabaseNote>> _notesStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _notesStreamController.stream.filter((note){
+        final currentUser = _user;
+        if(currentUser != null){
+          return note.userID == currentUser.id;
+        }else{
+          throw UserShouldBeSetBeforeReadingAllNotes();
+        }
+      });
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
-    try{
-      final user = await getUser(email: email);
-      return user;
-    } on CouldNotFindUser{
-      final createdUser = await createUser(email: email);
-      return createdUser;
-    } catch(e){
-      rethrow;
-    }
+  Future<DatabaseUser> getOrCreateUser(
+    { required String email, bool setAsCurrentUser = true }) async {
+      try{
+        final user = await getUser(email: email);
+        if(setAsCurrentUser){
+          _user = user;
+        }
+        return user;
+      } on CouldNotFindUser{
+        final createdUser = await createUser(email: email);
+        if(setAsCurrentUser){
+          _user = createdUser;
+        }
+        return createdUser;
+      } catch(e){
+        rethrow;
+      }
   }
 
   //using the "_" as prefix in a function name tells dart that
@@ -46,7 +64,7 @@ class NotesServices{
   }
 
   Future<DatabaseNote> updateNote(
-    {required DatabaseNote note, required String text }) async {
+    { required DatabaseNote note, required String text }) async {
       await _ensureDBisOpen();
       final db = _getDatabaseOrThrow();
       // checking if the note we want to update already exists or not
@@ -56,7 +74,9 @@ class NotesServices{
         {
           textColumn: text,
           isSyncedWithCloudColumn: 0,
-        }
+        },
+        where: "id = ?",
+        whereArgs: [note.id],
       );
       if(updateCount == 0){
         throw CouldNoteUpdateNote();

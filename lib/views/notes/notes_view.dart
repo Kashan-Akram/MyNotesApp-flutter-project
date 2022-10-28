@@ -3,6 +3,8 @@ import 'package:hehewhoknows/constants/routes.dart';
 import 'package:hehewhoknows/enums/menu_action.dart';
 import 'package:hehewhoknows/services/auth/auth_service.dart';
 import 'package:hehewhoknows/services/crud/notes_services.dart';
+import 'package:hehewhoknows/utilities/dialogs/logout_dialog.dart';
+import 'package:hehewhoknows/views/notes/notes_list_view.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -44,12 +46,11 @@ class _NotesViewState extends State<NotesView> {
               switch(value){
                 case MenuAction.logout:
                   final shouldLogout = await showLogOutDialog(context);
-                  // devtools.log(shouldLogout.toString());
+                  //devtools.log(shouldLogout.toString());
                   if(shouldLogout){
                     await AuthService.firebase().logOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                          (route) => false,
+                    Navigator.of(context).pushNamedAndRemoveUntil(loginRoute,
+                       (route) => false,
                     );
                   }
               }
@@ -78,18 +79,10 @@ class _NotesViewState extends State<NotesView> {
                             case ConnectionState.active:
                               if(snapshot.hasData){
                                 final allNotes = snapshot.data as List<DatabaseNote>;
-                                return ListView.builder(
-                                  itemCount: allNotes.length,
-                                  itemBuilder: (context, index){
-                                    final note = allNotes[index];
-                                    return ListTile(
-                                      title: Text(
-                                          note.text,
-                                          maxLines: 1,
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
+                                return NotesListView(
+                                  notes: allNotes,
+                                  onDeleteNote: (note) async {
+                                    await _notesService.deleteNote(id: note.id);
                                   },
                                 );
                               }else{
@@ -109,6 +102,7 @@ class _NotesViewState extends State<NotesView> {
   }
 }
 
+/*
 Future<bool> showLogOutDialog(BuildContext context){
   return showDialog<bool>(
     context: context,
@@ -132,3 +126,4 @@ Future<bool> showLogOutDialog(BuildContext context){
     },
   ).then( (value) => value ?? false );
 }
+ */

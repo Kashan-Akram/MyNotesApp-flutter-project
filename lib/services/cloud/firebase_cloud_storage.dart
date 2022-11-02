@@ -15,7 +15,7 @@ class FirebaseCloudStorage{
 
   Future<Iterable<CloudNote>> getNotes({required String ownerUserID}) async {
     try{
-      await notes.where(ownerUserIdFieldName,
+      return await notes.where(ownerUserIdFieldName,
         isEqualTo: ownerUserID
       ).get()
           .then(
@@ -31,6 +31,9 @@ class FirebaseCloudStorage{
       throw CouldNotGetAllNotesException();
     }
   }
+
+
+
 
 
   static final FirebaseCloudStorage _shared = FirebaseCloudStorage._sharedInstance();

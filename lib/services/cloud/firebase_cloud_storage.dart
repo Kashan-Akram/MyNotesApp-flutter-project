@@ -6,11 +6,17 @@ class FirebaseCloudStorage{
 
   final notes = FirebaseFirestore.instance.collection("notes");
 
-  void createNewNote({required String ownerUserID}) async {
-    await notes.add({
+  Future<CloudNote> createNewNote({required String ownerUserID}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: ownerUserID,
       textFieldName: "",
     });
+    final fetchedNote = await document.get();
+    return CloudNote(
+        documentID: fetchedNote.id,
+        ownerUserID: ownerUserID,
+        text: "",
+    );
   }
 
   Future<Iterable<CloudNote>> getNotes({required String ownerUserID}) async {
@@ -20,11 +26,14 @@ class FirebaseCloudStorage{
       ).get()
           .then(
           (value) => value.docs.map(
-              (doc) => CloudNote(
-                documentID: doc.id,
-                ownerUserID: doc.data()[ownerUserIdFieldName] as String,
-                text: doc.data()[textFieldName] as String,
-              ),
+              (doc) => CloudNote.fromSnapshot(doc),
+                /*
+                CloudNote(
+                  documentID: doc.id,
+                  ownerUserID: doc.data()[ownerUserIdFieldName] as String,
+                  text: doc.data()[textFieldName] as String,
+                ),
+                */
           ),
       );
     }catch(e){
@@ -64,3 +73,4 @@ class FirebaseCloudStorage{
 
 const ownerUserIdFieldName = 'user_id';
 const textFieldName = 'text';
+

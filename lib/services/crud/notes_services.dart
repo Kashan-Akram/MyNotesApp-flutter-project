@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:hehewhoknows/extensions/filter.dart';
@@ -365,3 +366,4 @@ const createNotesTable = '''
       FOREIGN KEY("user_id") REFERENCES "user"("id"),
       PRIMARY KEY("id" AUTOINCREMENT)
       );''';
+*/

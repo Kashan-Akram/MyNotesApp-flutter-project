@@ -7,7 +7,7 @@ Future<void> showErrorDialog(
   ){
   return showGenericDialog<void>(
       context: context,
-      title: "An error occured",
+      title: "An error occurred",
       content: text,
       optionsBuilder: () => {
         "Ok" : null,

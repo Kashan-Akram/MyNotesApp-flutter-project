@@ -32,19 +32,35 @@ class FirebaseCloudStorage{
     }
   }
 
+  Stream<Iterable<CloudNote>> allNotes({required String ownerUserID}) {
+    return notes.snapshots().map((event) => event.docs
+      .map((doc) => CloudNote.fromSnapshot(doc))
+      .where((note) => note.ownerUserID == ownerUserID));
+  }
 
+  Future<void> updateNotes({
+    required String documentID,
+    required String text,
+    }) async {
+      try{
+        await notes.doc(documentID).update({textFieldName: text});
+      }catch(e){
+        throw CouldNotUpdateNoteException();
+      }
+  }
 
-
+  Future<void> deleteNote({required String documentID}) async {
+    try{
+      await notes.doc(documentID).delete();
+    } catch(e){
+      CouldNotDeleteNoteException();
+    }
+  }
 
   static final FirebaseCloudStorage _shared = FirebaseCloudStorage._sharedInstance();
   FirebaseCloudStorage._sharedInstance();
   factory FirebaseCloudStorage() => _shared;
 }
-
-
-
-
-
 
 const ownerUserIdFieldName = 'user_id';
 const textFieldName = 'text';

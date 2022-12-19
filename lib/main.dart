@@ -173,27 +173,6 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

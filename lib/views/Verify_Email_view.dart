@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hehewhoknows/constants/routes.dart';
 import 'package:hehewhoknows/services/auth/auth_service.dart';
+import 'package:hehewhoknows/services/auth/bloc/auth_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hehewhoknows/services/auth/bloc/auth_event.dart';
 
 class VerifyEmail extends StatefulWidget {
   const VerifyEmail({Key? key}) : super(key: key);
@@ -20,17 +23,27 @@ class _VerifyEmailState extends State<VerifyEmail> {
         children: [
           const Text("We've sent you an email verification"),
           const Text("If verification email not received, press the button below"),
-          TextButton(onPressed: () async {
-            await AuthService.firebase().sendEmailVerification();
+          TextButton(
+            onPressed: () {
+              context.read<AuthBloc>().add(
+                const AuthEventSendEmailVerification(),
+              );
+              //await AuthService.firebase().sendEmailVerification();
           },
-            child: const Text("Resend Email Verification"),
+            child: const Text("Send Email Verification"),
           ),
-          TextButton(onPressed: () async {
-            await AuthService.firebase().logOut();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                registerRoute,
-                (route) => false,
-            );
+          TextButton(
+            onPressed: () async {
+              context.read<AuthBloc>().add(
+                const AuthEventLogOut(),
+              );
+              /*
+              await AuthService.firebase().logOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  registerRoute,
+                  (route) => false,
+              );
+              */
           },
               child: const Text("Restart"),
           )

@@ -1,8 +1,6 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hehewhoknows/constants/routes.dart';
-import 'package:hehewhoknows/services/auth/auth_service.dart';
 import 'package:hehewhoknows/services/auth/bloc/auth_bloc.dart';
 import 'package:hehewhoknows/services/auth/bloc/auth_event.dart';
 import 'package:hehewhoknows/services/auth/bloc/auth_state.dart';

@@ -1,4 +1,4 @@
-import 'package:hehewhoknows/services/auth/auth_providers.dart';
+import 'package:hehewhoknows/services/auth/auth_provider.dart';
 import 'package:hehewhoknows/services/auth/auth_user.dart';
 import 'package:hehewhoknows/services/auth/firebase_auth_provider.dart';
 

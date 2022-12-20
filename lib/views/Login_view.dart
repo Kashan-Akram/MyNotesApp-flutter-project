@@ -4,6 +4,7 @@ import 'package:hehewhoknows/constants/routes.dart';
 import 'package:hehewhoknows/services/auth/auth_exceptions.dart';
 import 'package:hehewhoknows/services/auth/bloc/auth_bloc.dart';
 import 'package:hehewhoknows/services/auth/bloc/auth_event.dart';
+import 'package:hehewhoknows/services/auth/bloc/auth_state.dart';
 import 'package:hehewhoknows/utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -16,18 +17,21 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   TextEditingController? _email;
   TextEditingController? _password;
+
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
   }
+
   @override
   void dispose() {
     _email!.dispose();
     _password!.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,64 +59,45 @@ class _LoginViewState extends State<LoginView> {
             ),
           ),
 
-          TextButton(
-            onPressed: () async {
-              final email = _email!.text;
-              final password = _password!.text;
-              try{
-                /*
-                // pre bloc code :-
-                await AuthService.firebase().logIn(
-                  email: email,
-                  password: password,
-                );
-                final user = AuthService.firebase().currentUser;
-                if(user!.isEmailVerified){
-                  //user's email is verified
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    notesRoute,
-                        (route) => false,
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if(state is AuthStateLoggedOut){
+                if(state.exception is UserNotFoundAuthException){
+                  await showErrorDialog(
+                    context,
+                    "Wrong Credentials!",
                   );
-                }else{
-                  //user's email is not verified
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    verifyEmailRoute,
-                    (route) => false,
+                }else if(state.exception is WrongPasswordAuthException){
+                  await showErrorDialog(
+                    context,
+                    "Wrong Credentials!",
+                  );
+                }else if(state.exception is GenericAuthException){
+                  await showErrorDialog(
+                    context,
+                    "Authentication Error!",
                   );
                 }
-                */
+              }
+            },
+            child: TextButton(
+              onPressed: () async {
+                final email = _email!.text;
+                final password = _password!.text;
                 context.read<AuthBloc>().add(
                   AuthEventLogIn(email, password),
                 );
-              } // try
-              on UserNotFoundAuthException{
-                await showErrorDialog(
-                  context,
-                  "User not found!",
-                );
-              }
-              on WrongPasswordAuthException{
-                await showErrorDialog(
-                  context,
-                  "Wrong Credentials!",
-                );
-              }
-              on GenericAuthException{
-                await showErrorDialog(
-                  context,
-                  "Authentication Error!",
-                );
-              }
-            },
-            child: const Text("Sign in"),
+              },
+              child: const Text("Sign in"),
+            ),
           ),
           TextButton(
             onPressed: () {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-            registerRoute,
-            (route) => false,
-            );
-          },
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                registerRoute,
+                    (route) => false,
+              );
+            },
             child: const Text("Not registered yet? Register here!"),
           )
         ],
@@ -121,23 +106,41 @@ class _LoginViewState extends State<LoginView> {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
+// pre-bloc login button on pressed logic after grabbing email and password:-
+try {
+await AuthService.firebase().logIn(
+email: email,
+password: password,
+);
+final user = AuthService.firebase().currentUser;
+if(user!.isEmailVerified){
+//user's email is verified
+Navigator.of(context).pushNamedAndRemoveUntil(
+notesRoute,
+(route) => false,
+);
+}else{
+//user's email is not verified
+Navigator.of(context).pushNamedAndRemoveUntil(
+verifyEmailRoute,
+(route) => false,
+);
+}
+} on UserNotFoundAuthException {
+await showErrorDialog(
+context,
+"User not found!",
+);
+} on WrongPasswordAuthException {
+await showErrorDialog(
+context,
+"Wrong Credentials!",
+);
+} on GenericAuthException {
+await showErrorDialog(
+context,
+"Authentication Error!",
+);
+}
+ */

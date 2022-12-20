@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:hehewhoknows/constants/routes.dart';
 import 'package:hehewhoknows/enums/menu_action.dart';
 import 'package:hehewhoknows/services/auth/auth_service.dart';
+import 'package:hehewhoknows/services/auth/bloc/auth_bloc.dart';
+import 'package:hehewhoknows/services/auth/bloc/auth_event.dart';
 import 'package:hehewhoknows/services/cloud/cloud_notes.dart';
-//import 'package:hehewhoknows/services/crud/notes_services.dart';
 import 'package:hehewhoknows/utilities/dialogs/logout_dialog.dart';
 import 'package:hehewhoknows/views/notes/notes_list_view.dart';
 import 'package:hehewhoknows/services/cloud/firebase_cloud_storage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -50,10 +52,16 @@ class _NotesViewState extends State<NotesView> {
                   final shouldLogout = await showLogOutDialog(context);
                   //devtools.log(shouldLogout.toString());
                   if(shouldLogout){
-                    await AuthService.firebase().logOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(loginRoute,
+                    //await AuthService.firebase().logOut();
+                    context.read<AuthBloc>().add(
+                      const AuthEventLogOut(),
+                    );
+                    /*
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginRoute,
                        (route) => false,
                     );
+                    */
                   }
               }
             },

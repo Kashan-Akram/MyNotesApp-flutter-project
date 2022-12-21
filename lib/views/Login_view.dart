@@ -39,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(
                 context,
-                "User Not Found!",
+                "Cannot find a user with the entered credentials!",
             );
           } else if (state.exception is WrongPasswordAuthException) {
             await showErrorDialog(
@@ -58,52 +58,70 @@ class _LoginViewState extends State<LoginView> {
         appBar: AppBar(
           title: const Text("Sign in"),
         ),
-        body: Column(
-          children: [
-            TextField(
-              controller: _email,
-              enableSuggestions: false,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: "Enter your email",
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Please sign in to your account to continue!"),
+              TextField(
+                controller: _email,
+                enableSuggestions: false,
+                autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  hintText: "Enter your email",
+                ),
               ),
-            ),
-            TextField(
-              controller: _password,
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: const InputDecoration(
-                hintText: "Enter your password",
+              TextField(
+                controller: _password,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: const InputDecoration(
+                  hintText: "Enter your password",
+                ),
               ),
-            ),
-
-            TextButton(
-              onPressed: () async {
-                final email = _email!.text;
-                final password = _password!.text;
-                context.read<AuthBloc>().add(
-                  AuthEventLogIn(email, password),
-                );
-              },
-              child: const Text("Sign in"),
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<AuthBloc>().add(
-                  const AuthEventShouldRegister(),
-                );
-                /*
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  registerRoute,
-                      (route) => false,
-                );
-                */
-              },
-              child: const Text("Not registered yet? Register here!"),
-            )
-          ],
+              Center(
+                child: Column(
+                  children: [
+                    TextButton(
+                      onPressed: () async {
+                        final email = _email!.text;
+                        final password = _password!.text;
+                        context.read<AuthBloc>().add(
+                          AuthEventLogIn(email, password),
+                        );
+                      },
+                      child: const Text("Sign in"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.read<AuthBloc>().add(
+                          const AuthEventForgotPassword(),
+                        );
+                      },
+                      child: const Text("Forgot your password? Reset here!"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.read<AuthBloc>().add(
+                          const AuthEventShouldRegister(),
+                        );
+                        /*
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          registerRoute,
+                              (route) => false,
+                        );
+                        */
+                      },
+                      child: const Text("Not registered yet? Register here!"),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

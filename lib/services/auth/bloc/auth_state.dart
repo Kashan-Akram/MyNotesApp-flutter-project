@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/material.dart';
 import 'package:hehewhoknows/services/auth/auth_user.dart';
 
 @immutable
@@ -36,6 +37,16 @@ class AuthStateLoggedIn extends AuthState{
 class AuthStateNeedsVerification extends AuthState{
   const AuthStateNeedsVerification({required bool isLoading}) :
         super(isLoading: isLoading);
+}
+
+class AuthStateForgotPassword extends AuthState{
+  final Exception? exception;
+  final bool hasSentEmail;
+  const AuthStateForgotPassword({
+    required this.exception,
+    required this.hasSentEmail,
+    required bool isLoading,
+  }) : super(isLoading: isLoading);
 }
 
 class AuthStateLoggedOut extends AuthState with EquatableMixin {

@@ -9,6 +9,7 @@ import 'package:hehewhoknows/services/auth/firebase_auth_provider.dart';
 import 'package:hehewhoknows/views/Login_view.dart';
 import 'package:hehewhoknows/views/Register_view.dart';
 import 'package:hehewhoknows/views/Verify_Email_view.dart';
+import 'package:hehewhoknows/views/forgot_password_view.dart';
 import 'package:hehewhoknows/views/notes/notes_view.dart';
 import 'package:hehewhoknows/views/notes/create_update_note_view.dart';
 
@@ -61,6 +62,8 @@ class HomePage extends StatelessWidget {
           return const VerifyEmail();
         }else if(state is AuthStateLoggedOut){
           return const LoginView();
+        }else if(state is AuthStateForgotPassword){
+          return const ForgotPasswordView();
         }else if(state is AuthStateRegistering){
           return const RegisterView();
         }else{

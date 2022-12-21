@@ -39,7 +39,7 @@ class _LoginViewState extends State<LoginView> {
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(
                 context,
-                "Wrong Credentials!",
+                "User Not Found!",
             );
           } else if (state.exception is WrongPasswordAuthException) {
             await showErrorDialog(

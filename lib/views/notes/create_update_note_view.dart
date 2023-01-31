@@ -4,7 +4,7 @@ import 'package:hehewhoknows/utilities/dialogs/cannot_share_empty_note_dialog.da
 //import 'package:hehewhoknows/services/crud/notes_services.dart';
 import 'package:hehewhoknows/utilities/generics/get_arguments.dart';
 import 'package:hehewhoknows/services/cloud/cloud_notes.dart';
-import 'package:hehewhoknows/services/cloud/cloud_storage_exceptions.dart';
+//import 'package:hehewhoknows/services/cloud/cloud_storage_exceptions.dart';
 import 'package:hehewhoknows/services/cloud/firebase_cloud_storage.dart';
 import 'package:share_plus/share_plus.dart';
 

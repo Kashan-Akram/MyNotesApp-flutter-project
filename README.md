@@ -7,6 +7,9 @@ An elegant notes taking app written in Flutter that uses google cloud firestore 
 
 The app is pretty much complete, the only thing that I think is missing in this project is a Splash Screen and I will implement that once I learn Flutter Animations and basic designing using Figma.
 
+Screenshots from the final app are included in assets/screemshots
+
+
 Important Links:
 
     https://firebase.google.com/
